@@ -1,9 +1,24 @@
-import TOS from '@/data/legal/content/tos.mdx';
+import TOS from '@/components/legal/TOS';
+import { openGraph } from '@/lib/metadata';
+import { Metadata } from 'next';
 
 export default function TOSPage() {
   return (
-    <section className='prose max-w-none leading-relaxed'>
+    <main>
       <TOS />
-    </section>
+    </main>
   );
 }
+
+export const metadata: Metadata = {
+  title: 'UPDATE: Terms Of Services | Business',
+  description:
+    'UPDATE: Welcome to Business! By creating an account and using our services, you agree to these Terms of Service.',
+  openGraph: {
+    ...openGraph,
+    title: 'Terms Of Services',
+  },
+  alternates: {
+    canonical: '/tos',
+  },
+};
