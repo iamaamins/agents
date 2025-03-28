@@ -1,1 +1,72 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+@theme {
+  --color-white: #f6f6f6;
+  --color-black: #333c4d;
+  --color-green: #22c55e;
+  --color-silver: #ffffff;
+  --color-peach: #ff8360;
+  --color-charcoal: #2f3237;
+  --color-slight-gray: #9ca3af26;
+  --color-white-black-scheme: light-dark(
+    var(--color-white),
+    var(--color-black)
+  );
+  --color-black-white-scheme: light-dark(
+    var(--color-black),
+    var(--color-white)
+  );
+  --color-silver-charcoal-scheme: light-dark(
+    var(--color-silver),
+    var(--color-charcoal)
+  );
+}
 
+html {
+  max-width: 1280px;
+  margin: 0 auto;
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  color: var(--color-black-white-scheme);
+  background-color: var(--color-white-black-scheme);
+}
+
+.light {
+  color-scheme: light;
+  color: var(--color-black-white-scheme);
+  background-color: var(--color-white-black-scheme);
+}
+
+.dark {
+  color-scheme: dark;
+  color: var(--color-black-white-scheme);
+  background-color: var(--color-white-black-scheme);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+.prose * {
+  color: var(--color-black-white-scheme);
+}
+
+@keyframes move_arrow {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@layer utilities {
+  .animate-move {
+    animation: move_arrow 1s ease-out infinite;
+  }
+}
