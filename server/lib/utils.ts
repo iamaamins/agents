@@ -1,20 +1,20 @@
 import 'server-only';
 
-import { createHmac, timingSafeEqual } from 'crypto';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import pdf from 'pdf-parse';
 
-export const removeExtraSpaces = (str: string) =>
-  str.replace(/\s+/g, ' ').trim();
+export async function getPersonalDetail() {
+  const pdfBuffer = readFileSync(
+    join(process.cwd(), 'data', 'me', 'linkedin.pdf'),
+  );
+  const pdfData = await pdf(pdfBuffer);
+  const linkedin = pdfData.text;
 
-export function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+  const summary = readFileSync(
+    join(process.cwd(), 'data', 'me', 'summary.txt'),
+    'utf-8',
+  );
 
-export function verifyLSQZSig(payload: string, sig: string | null) {
-  if (!sig) return false;
-
-  const hmac = createHmac('sha256', process.env.LSQZ_WEBHOOK_SECRET as string);
-  const digest = Buffer.from(hmac.update(payload).digest('hex'), 'utf8');
-  const signature = Buffer.from(sig, 'utf8');
-
-  return timingSafeEqual(digest, signature);
+  return { linkedin, summary };
 }

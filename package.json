@@ -1,5 +1,5 @@
 {
-  "name": "boilerplate",
+  "name": "alterego",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,16 +12,20 @@
     "@prisma/client": "^6.5.0",
     "next": "15.2.4",
     "next-auth": "^4.24.11",
+    "openai": "^4.103.0",
+    "pdf-parse": "^1.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "react-spinners": "^0.15.0"
+    "react-spinners": "^0.15.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.16",
     "@types/mdx": "^2.0.13",
     "@types/node": "^20",
+    "@types/pdf-parse": "^1.1.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
