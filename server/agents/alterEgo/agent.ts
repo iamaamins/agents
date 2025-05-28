@@ -4,6 +4,8 @@ import { client } from '@/server/config/ai';
 import { tools, handleToolCalls } from './tools';
 import { getPersonalDetail } from '@/server/lib/utils';
 import { ChatCompletionMessageParam } from 'openai/resources.mjs';
+import { retry } from '@/server/lib/agent';
+import { CONFIG } from '@/server/config/agent';
 
 function generateSystemPrompt(name: string, linkedin: string, summary: string) {
   return `
@@ -41,11 +43,13 @@ export async function chat(message: string) {
 
   let done = false;
   while (!done) {
-    const response = await client.chat.completions.create({
-      model: 'claude-3-5-haiku-20241022',
-      messages,
-      tools,
-    });
+    const response = await retry(() =>
+      client.chat.completions.create({
+        model: CONFIG.model,
+        messages,
+        tools,
+      }),
+    );
 
     if (response.choices[0].finish_reason === 'tool_calls') {
       const message = response.choices[0].message;

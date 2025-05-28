@@ -121,6 +121,7 @@ export async function handleEmailGeneratorToolCalls(
           content: email,
           tool_call_id: toolCall.id,
         });
+
         templates.push(email);
       }
     } else {

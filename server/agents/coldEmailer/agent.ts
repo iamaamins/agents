@@ -97,7 +97,7 @@ async function generateSubject(email: string) {
   }
 }
 
-async function convertEmail(email: string) {
+async function convertEmailToHtml(email: string) {
   try {
     const response = await retry(() =>
       client.chat.completions.create({
@@ -130,7 +130,7 @@ export async function generateAndSendEmail() {
     const subject = await generateSubject(bestEmail);
     if (!subject) throw new Error('Failed to generate subject');
 
-    const html = await convertEmail(bestEmail);
+    const html = await convertEmailToHtml(bestEmail);
     if (!html) throw new Error('Failed to convert email to HTML');
 
     await sendEmail({
