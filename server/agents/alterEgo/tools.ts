@@ -64,19 +64,16 @@ export function handleToolCalls(toolCalls: ChatCompletionMessageToolCall[]) {
   for (const toolCall of toolCalls) {
     const { name, arguments: args } = toolCall.function;
 
-    if (name in functions) {
-      const message = functions[name as keyof typeof functions](
-        JSON.parse(args),
-      );
+    const toolExists = name in functions;
+    if (!toolExists) continue;
 
-      messages.push({
-        role: 'tool',
-        content: JSON.stringify(message),
-        tool_call_id: toolCall.id,
-      });
-    } else {
-      console.error(`Unknown tool function: ${name}`);
-    }
+    const message = functions[name as keyof typeof functions](JSON.parse(args));
+
+    messages.push({
+      role: 'tool',
+      content: JSON.stringify(message),
+      tool_call_id: toolCall.id,
+    });
   }
 
   return messages;

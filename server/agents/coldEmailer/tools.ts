@@ -13,6 +13,11 @@ export const tools: ChatCompletionTool[] = [
     function: {
       name: 'writeProfessionalEmail',
       description: 'Use this tool to write professional, serious cold emails',
+      parameters: {
+        type: 'object',
+        properties: {},
+        required: [],
+      },
     },
   },
   {
@@ -20,6 +25,11 @@ export const tools: ChatCompletionTool[] = [
     function: {
       name: 'writeHumorousEmail',
       description: 'Use this tool to write witty, engaging cold emails',
+      parameters: {
+        type: 'object',
+        properties: {},
+        required: [],
+      },
     },
   },
   {
@@ -27,6 +37,11 @@ export const tools: ChatCompletionTool[] = [
     function: {
       name: 'writeConciseEmail',
       description: 'Use this tool to write concise, to the point cold emails',
+      parameters: {
+        type: 'object',
+        properties: {},
+        required: [],
+      },
     },
   },
 ];
@@ -112,7 +127,10 @@ export async function handleEmailGeneratorToolCalls(
   for (const toolCall of toolCalls) {
     const { name } = toolCall.function;
 
-    if (name in functions) {
+    const toolExists = name in functions;
+    if (!toolExists) continue;
+
+    try {
       const email = await functions[name as keyof typeof functions]();
 
       if (email) {
@@ -124,8 +142,8 @@ export async function handleEmailGeneratorToolCalls(
 
         templates.push(email);
       }
-    } else {
-      console.error(`Unknown tool function: ${name}`);
+    } catch (err) {
+      console.error(err);
     }
   }
 
