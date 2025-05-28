@@ -29,7 +29,10 @@ function generateSystemPrompt(name: string, linkedin: string, summary: string) {
     `;
 }
 
-export async function chat(message: string) {
+export async function chat(
+  message: string,
+  history: ChatCompletionMessageParam[],
+) {
   const { linkedin, summary } = await getPersonalDetail();
 
   const messages: ChatCompletionMessageParam[] = [
@@ -37,7 +40,7 @@ export async function chat(message: string) {
       role: 'system',
       content: generateSystemPrompt('Alamin Shaikh', summary, linkedin),
     },
-    // Add 5 previous messages as history
+    ...history,
     { role: 'user', content: message },
   ];
 

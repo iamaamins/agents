@@ -19,7 +19,8 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-spinners": "^0.15.0",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
