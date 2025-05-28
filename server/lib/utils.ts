@@ -18,3 +18,7 @@ export async function getPersonalDetail() {
 
   return { linkedin, summary };
 }
+
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

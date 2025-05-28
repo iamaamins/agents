@@ -51,3 +51,10 @@ export type SuccessResponse<T> = {
 export type Response<T> = SuccessResponse<T> | ErrorResponse;
 
 export type Theme = 'light' | 'dark' | 'system';
+
+export type EmailOptions = {
+  to: string;
+  from: string;
+  subject: string;
+  html: string;
+};
