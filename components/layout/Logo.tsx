@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function Logo() {
   return (
     <Link href='/' className={`text-xl font-extrabold ${brandFont.className} `}>
-      Busi<span className='text-peach'>Ness</span>
+      Age<span className='text-peach'>nts</span>
     </Link>
   );
 }

@@ -1,5 +1,5 @@
 {
-  "name": "alterego",
+  "name": "agents",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
