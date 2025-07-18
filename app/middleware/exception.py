@@ -10,7 +10,11 @@ class ExceptionMiddleware(BaseHTTPMiddleware):
         except Exception as exc:
             print(exc)
 
-            if 'not a valid ObjectId' in str(exc):
-                return JSONResponse(status_code=500, content={'detail': 'Invalid ObjectId'})
+            if "not a valid ObjectId" in str(exc):
+                return JSONResponse(
+                    status_code=500, content={"detail": "Invalid ObjectId"}
+                )
 
-            return JSONResponse(status_code=500, content={'message': 'Internal server error'})
+            return JSONResponse(
+                status_code=500, content={"message": "Internal server error"}
+            )
