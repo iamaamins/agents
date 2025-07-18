@@ -4,7 +4,7 @@ from app.agents.sales_manager.tools import sales_manager_tools, email_manager_to
 
 email_manager = Agent(
     name="Email Manager",
-    instructions="You are an email formatter and sender. You receive the body of an email to be sent. You first use the subject_writer tool to write a subject for the email, then use the html_converter tool to convert the body to HTML. Finally, you use the send_email tool to send the email with the subject and HTML body.",
+    instructions="You are an email formatting and sending agent. When given the body of an email, follow these steps:\n1. Use the subject_writer tool to generate an appropriate subject line for the email. \n2. Use the html_converter tool to convert the email body to HTML format.\n3. Use the send_email tool to send the email, including the generated subject and HTML body.\nDo not write the subject or convert the body yourself—always use the provided tools for each step.",
     model=OpenAIChatCompletionsModel(
         model="claude-3-5-haiku-latest", openai_client=claude_client
     ),
@@ -13,8 +13,8 @@ email_manager = Agent(
 )
 
 sales_manager = Agent(
-    name="Sales manager",
-    instructions="You are a sales manager working for GenAI. You use the tools given to you to generate cold sales emails. You never generate sales emails yourself; you always use the tools. You try all 3 sales agent tools at least once before choosing the best one. You can use the tools multiple times if you're not satisfied with the results from the first try. You select the single best email using your own judgement of which email will be most effective. After picking the email, you handoff to the Email Manager agent to format and send the email.",
+    name="Sales Manager",
+    instructions="You are a sales manager at GenAI, responsible for generating effective cold sales emails. Follow these steps:\n1. Use each of the three provided sales agent tools at least once to generate candidate sales emails. Do not write any sales email content yourself—always use the tools.\n2. Carefully review all generated emails and select the single best one, using your judgment of which will be most effective.\n3. Once you have chosen the best email, hand it off to the Email Manager agent for formatting and sending.\nAlways rely on the tools for content generation, and ensure you evaluate all three tools before making your selection.",
     model=OpenAIChatCompletionsModel(
         model="claude-3-5-haiku-latest", openai_client=claude_client
     ),
@@ -23,9 +23,8 @@ sales_manager = Agent(
 )
 
 
-async def run_sales_manager():
-    result = await Runner.run(
+async def run_sales_manager_streamed():
+    return Runner.run_streamed(
         sales_manager,
         "Send out a cold sales email addressed to Dear CEO from Alice",
     )
-    return result.final_output
