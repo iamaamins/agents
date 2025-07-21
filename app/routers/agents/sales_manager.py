@@ -77,12 +77,12 @@ async def stream_actions():
             yield value
 
         # Send email
-        yield "data: 🚀 Sending email\n\n"
+        yield "data: 📤 [ACTION] Sending email\n\n"
         yield "data: \\n\\n\n\n"
         send_email(
             subject="".join(subject_chunks),
             body="".join(html_chunks),
         )
-        yield "data: 🚀 Email sent successfully\n\n"
+        yield "data: ✅ [SUCCESS] Email sent successfully\n\n"
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")

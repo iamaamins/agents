@@ -25,7 +25,7 @@ async def run_task(agent: Agent, prompt: str, response_chunks: list):
 
     separator = "\\n\\n"
 
-    yield f"data: 🚀 Running {agent.name}\n\n"
+    yield f"data: 🚀 [AGENT] Running {agent.name}\n\n"
     yield f"data: {separator}\n\n"
 
     results = Runner.run_streamed(agent, prompt)
