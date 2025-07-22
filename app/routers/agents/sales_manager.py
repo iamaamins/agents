@@ -1,16 +1,16 @@
 from agents import Runner
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse, StreamingResponse
-from app.agents.sales_manager.agents import (
+from app.agents.sales_manager.worker_agents import (
     best_email_picker,
     busy_sales_agent,
     engaging_sales_agent,
     html_converter,
     professional_sales_agent,
-    sales_manager,
     subject_writer,
     html_converter,
 )
+from app.agents.sales_manager.manager_agents import sales_manager
 from app.lib.utils import run_agent_streamed, send_email
 
 router = APIRouter()
