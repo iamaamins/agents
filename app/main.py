@@ -9,7 +9,11 @@ initialize_app_config()
 
 app = FastAPI()
 
-origins = ["http://localhost:3000"]
+origins = [
+    "http://localhost:3000",
+    "http://www.alaminshaikh.com",
+    "http://dev.alaminshaikh.com",
+]
 
 # Middlewares
 app.add_middleware(ExceptionMiddleware)
