@@ -1,7 +1,7 @@
 from agents import Runner
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse
-from app.agents.sales_manager.worker_agents import (
+from app.agents.sales_flow.worker_agents import (
     best_email_picker,
     busy_sales_agent,
     engaging_sales_agent,
@@ -10,13 +10,13 @@ from app.agents.sales_manager.worker_agents import (
     subject_writer,
     html_converter,
 )
-from app.agents.sales_manager.manager_agents import sales_manager
+from app.agents.sales_flow.manager_agents import sales_manager
 from app.lib.utils import run_agent_streamed, send_email
 
 router = APIRouter()
 
 
-@router.post("/sales-manager/autonomous/{email}")
+@router.post("/sales-flow/autonomous/{email}")
 async def autonomous(email: str):
     if not email or not email.strip():
         raise HTTPException(status_code=400, detail="Email is required")
@@ -31,7 +31,7 @@ async def autonomous(email: str):
     return JSONResponse(content=result.final_output, status_code=200)
 
 
-@router.get("/sales-manager/streaming/{email}")
+@router.get("/sales-flow/streaming/{email}")
 async def streaming(email: str):
     if not email or not email.strip():
         raise HTTPException(status_code=400, detail="Email is required")

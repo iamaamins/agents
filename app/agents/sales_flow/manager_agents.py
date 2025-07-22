@@ -1,5 +1,5 @@
 from agents import Agent
-from app.agents.sales_manager.tools import email_manager_tools, sales_manager_tools
+from app.agents.sales_flow.tools import email_manager_tools, sales_manager_tools
 from app.config.ai import chat_completions_model
 
 email_manager = Agent(

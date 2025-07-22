@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from app.middleware.exception import ExceptionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.middleware.limiter import RateLimitMiddleware
-from app.routers.agents import sales_manager
+from app.routers.agents import sales_flow
 from app.config.env import initialize_app_config
 
 initialize_app_config()
@@ -27,4 +27,4 @@ app.add_middleware(
 )
 
 # Routers
-app.include_router(sales_manager.router)
+app.include_router(sales_flow.router)
