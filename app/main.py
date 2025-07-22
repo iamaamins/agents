@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.middleware.exception import ExceptionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
+from app.middleware.limiter import RateLimitMiddleware
 from app.routers.agents import sales_manager
 from app.config.env import initialize_app_config
 
@@ -12,6 +13,7 @@ origins = ["http://localhost:3000"]
 
 # Middlewares
 app.add_middleware(ExceptionMiddleware)
+app.add_middleware(RateLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
