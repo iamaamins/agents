@@ -16,7 +16,7 @@ from app.lib.utils import run_agent_streamed, send_email
 router = APIRouter()
 
 
-@router.post("/sales/manager/autonomous")
+@router.post("/sales-manager/autonomous")
 async def autonomous():
     result = await Runner.run(
         sales_manager, "Send out a cold sales email addressed to Dear CEO from Alice"
