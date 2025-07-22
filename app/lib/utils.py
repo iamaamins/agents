@@ -20,8 +20,8 @@ def send_email(subject: str, body: str):
     return "Email sent successfully"
 
 
-async def run_task(agent: Agent, prompt: str, response_chunks: list):
-    """Stream an agent response and get the chunks in a list"""
+async def run_agent_streamed(agent: Agent, prompt: str, response_chunks: list):
+    """Stream the agent response and get the chunks in a list"""
 
     separator = "\\n\\n"
 

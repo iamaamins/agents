@@ -1,27 +1,37 @@
+from agents import Runner
 from fastapi import APIRouter
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from app.agents.sales_manager.agents import (
     best_email_picker,
     busy_sales_agent,
     engaging_sales_agent,
     html_converter,
     professional_sales_agent,
+    sales_manager,
     subject_writer,
     html_converter,
 )
-from app.lib.utils import run_task, send_email
+from app.lib.utils import run_agent_streamed, send_email
 
 router = APIRouter()
 
 
-@router.get("/sales-manager/stream-actions")
-async def stream_actions():
+@router.post("/sales/manager/autonomous")
+async def autonomous():
+    result = await Runner.run(
+        sales_manager, "Send out a cold sales email addressed to Dear CEO from Alice"
+    )
+    return JSONResponse(content=result.final_output, status_code=200)
+
+
+@router.get("/sales-manager/streaming")
+async def streaming():
     async def event_generator():
         emails: list[str] = []
 
         # Generate professional email
         professional_email_chunks: list[str] = []
-        async for value in run_task(
+        async for value in run_agent_streamed(
             agent=professional_sales_agent,
             prompt="Write a professional sales email",
             response_chunks=professional_email_chunks,
@@ -31,7 +41,7 @@ async def stream_actions():
 
         # Generate engaging email
         engaging_email_chunks: list[str] = []
-        async for value in run_task(
+        async for value in run_agent_streamed(
             agent=engaging_sales_agent,
             prompt="Write an engaging sales email",
             response_chunks=engaging_email_chunks,
@@ -41,7 +51,7 @@ async def stream_actions():
 
         # Generate concise email
         concise_email_chunks: list[str] = []
-        async for value in run_task(
+        async for value in run_agent_streamed(
             agent=busy_sales_agent,
             prompt="Write a concise sales email",
             response_chunks=concise_email_chunks,
@@ -51,7 +61,7 @@ async def stream_actions():
 
         # Pick the best email
         best_email_chunks: list[str] = []
-        async for value in run_task(
+        async for value in run_agent_streamed(
             agent=best_email_picker,
             prompt=f"Pick the best email from the following options:\n\n{"\n\n---\n\n".join(emails)}",
             response_chunks=best_email_chunks,
@@ -60,7 +70,7 @@ async def stream_actions():
 
         # Generate email subject
         subject_chunks: list[str] = []
-        async for value in run_task(
+        async for value in run_agent_streamed(
             agent=subject_writer,
             prompt=f"Write a subject for the following cold sales email: \n\n{"".join(best_email_chunks)}",
             response_chunks=subject_chunks,
@@ -69,7 +79,7 @@ async def stream_actions():
 
         # Convert email to html
         html_chunks: list[str] = []
-        async for value in run_task(
+        async for value in run_agent_streamed(
             agent=html_converter,
             prompt=f"Convert the following text email body to an HTML email body: {''.join(best_email_chunks)}",
             response_chunks=html_chunks,
