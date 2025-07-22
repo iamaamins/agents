@@ -13,3 +13,5 @@ def initialize_app_config():
 
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+MISTRAL_API_KEY = os.environ.get("MISTRAL_API_KEY")
+IS_DEV = os.environ.get("ENVIRONMENT") == "development"
