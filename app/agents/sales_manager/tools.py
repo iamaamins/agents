@@ -36,8 +36,8 @@ html_converter_tool = html_converter.as_tool(
 
 
 @function_tool
-def send_html_email(subject: str, body: str):
-    send_email(subject=subject, body=body)
+def send_html_email(subject: str, body: str, recipient: str):
+    send_email(subject=subject, body=body, recipient=recipient)
 
 
 sales_manager_tools = [

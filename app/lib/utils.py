@@ -4,14 +4,14 @@ from sendgrid import Mail, SendGridAPIClient
 from app.config.env import SENDGRID_API_KEY
 
 
-def send_email(subject: str, body: str):
+def send_email(subject: str, body: str, recipient: str):
     """Send an email with the given body to all sales prospects"""
 
     sg = SendGridAPIClient(SENDGRID_API_KEY)
 
     mail = Mail(
         from_email="no-reply@alaminshaikh.com",
-        to_emails="hello@alaminshaikh.com",
+        to_emails=recipient,
         subject=subject,
         html_content=body,
     )

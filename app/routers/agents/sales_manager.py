@@ -1,5 +1,5 @@
 from agents import Runner
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse
 from app.agents.sales_manager.worker_agents import (
     best_email_picker,
@@ -16,16 +16,29 @@ from app.lib.utils import run_agent_streamed, send_email
 router = APIRouter()
 
 
-@router.post("/sales-manager/autonomous")
-async def autonomous():
+@router.post("/sales-manager/autonomous/{email}")
+async def autonomous(email: str):
+    if not email or not email.strip():
+        raise HTTPException(status_code=400, detail="Email is required")
+
+    if "@" not in email or "." not in email:
+        raise HTTPException(status_code=400, detail="Invalid email format")
+
     result = await Runner.run(
-        sales_manager, "Send out a cold sales email addressed to Dear CEO from Alice"
+        sales_manager,
+        f"Send out a cold sales email addressed to Dear CEO from Alice to: {email}",
     )
     return JSONResponse(content=result.final_output, status_code=200)
 
 
-@router.get("/sales-manager/streaming")
-async def streaming():
+@router.get("/sales-manager/streaming/{email}")
+async def streaming(email: str):
+    if not email or not email.strip():
+        raise HTTPException(status_code=400, detail="Email is required")
+
+    if "@" not in email or "." not in email:
+        raise HTTPException(status_code=400, detail="Invalid email format")
+
     async def event_generator():
         emails: list[str] = []
 
@@ -90,8 +103,7 @@ async def streaming():
         yield "data: 📤 [ACTION] Sending email\n\n"
         yield "data: \\n\\n\n\n"
         send_email(
-            subject="".join(subject_chunks),
-            body="".join(html_chunks),
+            subject="".join(subject_chunks), body="".join(html_chunks), recipient=email
         )
         yield "data: ✅ [SUCCESS] Email sent successfully\n\n"
 
