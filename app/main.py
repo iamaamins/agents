@@ -11,8 +11,8 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
-    "http://www.alaminshaikh.com",
-    "http://dev.alaminshaikh.com",
+    "https://www.alaminshaikh.com",
+    "https://dev.alaminshaikh.com",
 ]
 
 # Middlewares
