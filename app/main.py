@@ -26,5 +26,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# Health check route
+@app.get("/")
+def health_check():
+    return {"message": "Server is up and running"}
+
+
 # Routers
 app.include_router(sales_flow.router)

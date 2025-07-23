@@ -1,11 +1,10 @@
-from typing import Optional
 from agents import Agent, Runner
 from sendgrid import Mail, SendGridAPIClient
 from app.config.env import SENDGRID_API_KEY
 
 
 def send_email(subject: str, body: str, recipient: str):
-    """Send an email with the given body to all sales prospects"""
+    """Send an email with the given body to the recipient"""
 
     sg = SendGridAPIClient(SENDGRID_API_KEY)
 
