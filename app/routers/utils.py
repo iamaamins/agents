@@ -21,7 +21,7 @@ async def check_rate_limit(
 
     try:
         client_ip = limiter.get_client_ip(request=request)
-        route = f"{method.upper()} /{route}"
+        route = f"{method.upper()} {route}"
 
         status = limiter.get_rate_limit_status(client_ip=client_ip, route=route)
 
