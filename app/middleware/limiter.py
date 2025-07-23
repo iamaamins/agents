@@ -1,21 +1,19 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from starlette.middleware.base import BaseHTTPMiddleware
 from collections import defaultdict
 from datetime import datetime, timedelta
 from typing import Dict, Tuple
 
 
-class RateLimitMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app):
-        super().__init__(app)
-
+class RateLimiter:
+    def __init__(self):
         self.max_requests = 2
         self.time_window = timedelta(hours=1)
+        self.excluded_routes = {"/utils"}
         self.request_history: Dict[Tuple[str, str], list] = defaultdict(list)
 
     def get_client_ip(self, request: Request) -> str:
-        """Extract client IP address, handling proxies and load balancers."""
+        """Extract client IP address, handling proxies and load balancers"""
 
         forwarded_for = request.headers.get("x-forwarded-for")
         if forwarded_for:
@@ -39,15 +37,47 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             if timestamp > cutoff_time
         ]
 
+    def get_rate_limit_status(self, client_ip: str, route: str) -> dict:
+        """Get rate limit status for a specific client IP and route"""
+
+        ip_route_key = (client_ip, route)
+        self.cleanup_old_requests(ip_route_key)
+
+        current_requests = len(self.request_history[ip_route_key])
+        is_rate_limited = current_requests >= self.max_requests
+
+        seconds_until_reset = 0
+        if is_rate_limited:
+            oldest_request = min(self.request_history[ip_route_key])
+            next_allowed = oldest_request + self.time_window
+            seconds_until_reset = (next_allowed - datetime.now()).total_seconds()
+
+        return {
+            "is_rate_limited": is_rate_limited,
+            "current_requests": current_requests,
+            "max_requests": self.max_requests,
+            "retry_after_seconds": max(0, int(seconds_until_reset)),
+            "client_ip": client_ip,
+            "route": route,
+        }
+
     async def dispatch(self, request: Request, call_next):
+        if any(
+            request.url.path.startswith(excluded_route)
+            for excluded_route in self.excluded_routes
+        ):
+            return await call_next(request)
+
         client_ip = self.get_client_ip(request)
         route = f"{request.method} {request.url.path}"
+
         ip_route_key = (client_ip, route)
-
         self.cleanup_old_requests(ip_route_key)
-        current_requests = len(self.request_history[ip_route_key])
 
-        if current_requests >= self.max_requests:
+        current_requests = len(self.request_history[ip_route_key])
+        is_rate_limited = current_requests >= self.max_requests
+
+        if is_rate_limited:
             oldest_request = min(self.request_history[ip_route_key])
             next_allowed = oldest_request + self.time_window
             seconds_until_reset = (next_allowed - datetime.now()).total_seconds()
@@ -57,12 +87,18 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 content={
                     "error": "Rate limit exceeded",
                     "message": f"Maximum {self.max_requests} requests per hour exceeded for this route",
-                    "retry_after_seconds": max(0, int(seconds_until_reset)),
+                    "retry_after_seconds": max(0, (seconds_until_reset)),
                     "client_ip": client_ip,
                     "route": route,
                 },
             )
-        self.request_history[ip_route_key].append(datetime.now())
 
+        self.request_history[ip_route_key].append(datetime.now())
         response = await call_next(request)
         return response
+
+
+def get_limiter(request: Request) -> RateLimiter:
+    """Dependency to get the shared RateLimiter instance from app.state."""
+
+    return request.app.state.limiter
