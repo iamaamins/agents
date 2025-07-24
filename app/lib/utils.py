@@ -24,7 +24,7 @@ async def run_agent_streamed(agent: Agent, prompt: str, response_chunks: list):
 
     separator = "\\n\\n"
 
-    yield f"data: 🚀 [AGENT] Running {agent.name}\n\n"
+    yield f"data: 🤹 [AGENT] Running {agent.name}\n\n"
     yield f"data: {separator}\n\n"
 
     results = Runner.run_streamed(agent, prompt)
