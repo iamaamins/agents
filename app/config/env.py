@@ -2,7 +2,7 @@ import os
 import certifi
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 
 def initialize_app_config():
