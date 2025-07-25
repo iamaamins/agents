@@ -26,7 +26,7 @@ async def autonomous(email: str):
 
     result = await Runner.run(
         sales_manager,
-        f"Send out a cold sales email addressed to Dear CEO from Alice to: {email}",
+        f"Send out a cold sales email addressed to Dear CEO from Head of Business Development to: {email}",
     )
     return JSONResponse(content=result.final_output, status_code=200)
 
