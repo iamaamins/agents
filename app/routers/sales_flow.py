@@ -1,7 +1,7 @@
 from agents import Runner
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse
-from app.agents.sales_flow.worker_agents import (
+from app.agents.openai.sales_flow.worker_agents import (
     best_email_picker,
     busy_sales_agent,
     engaging_sales_agent,
@@ -10,7 +10,7 @@ from app.agents.sales_flow.worker_agents import (
     subject_writer,
     html_converter,
 )
-from app.agents.sales_flow.manager_agents import sales_manager
+from app.agents.openai.sales_flow.manager_agents import sales_manager
 from app.lib.utils import run_agent_streamed, send_email
 
 router = APIRouter()

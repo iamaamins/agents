@@ -4,7 +4,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from app.middleware.exception import ExceptionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.middleware.limiter import RateLimiter
-from app.routers.agents import sales_flow
+from app.routers import sales_flow
 from app.config.env import initialize_app_config
 from app.routers import utils
 

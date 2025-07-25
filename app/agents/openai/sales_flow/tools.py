@@ -1,4 +1,4 @@
-from app.agents.sales_flow.worker_agents import (
+from app.agents.openai.sales_flow.worker_agents import (
     busy_sales_agent,
     engaging_sales_agent,
     html_converter,
