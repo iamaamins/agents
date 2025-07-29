@@ -1,23 +1,38 @@
-from fastapi import Request
+from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 from collections import defaultdict
 from datetime import datetime, timedelta
-from typing import Dict, Tuple
+from typing import TypedDict
+from starlette.middleware.base import RequestResponseEndpoint
+
+IpRouteKey = tuple[str, str]
+RequestTimestamps = list[datetime]
+
+
+class RateLimitStatus(TypedDict):
+    is_rate_limited: bool
+    current_requests: int
+    max_requests: int
+    retry_after_seconds: int
+    client_ip: str
+    route: str
 
 
 class RateLimiter:
-    def __init__(self):
-        self.max_requests = 2
-        self.time_window = timedelta(hours=1)
-        self.excluded_routes = {"/utils"}
-        self.request_history: Dict[Tuple[str, str], list] = defaultdict(list)
+    def __init__(self) -> None:
+        self.max_requests: int = 2
+        self.time_window: timedelta = timedelta(hours=1)
+        self.excluded_routes: set[str] = {"/utils"}
+        self.request_history: dict[IpRouteKey, RequestTimestamps] = defaultdict[
+            IpRouteKey, RequestTimestamps
+        ](list)
 
     def get_client_ip(self, request: Request) -> str:
         """Extract client IP address, handling proxies and load balancers"""
 
         forwarded_for = request.headers.get("x-forwarded-for")
         if forwarded_for:
-            return forwarded_for.split(",")[0].strip()
+            return forwarded_for.split(sep=",")[0].strip()
 
         real_ip = request.headers.get("x-real-ip")
         if real_ip:
@@ -25,7 +40,7 @@ class RateLimiter:
 
         return getattr(request.client, "host")
 
-    def cleanup_old_requests(self, ip_route_key: Tuple[str, str]):
+    def cleanup_old_requests(self, ip_route_key: tuple[str, str]) -> None:
         """Remove timestamps older than the time window"""
 
         current_time = datetime.now()
@@ -37,7 +52,7 @@ class RateLimiter:
             if timestamp > cutoff_time
         ]
 
-    def get_rate_limit_status(self, client_ip: str, route: str) -> dict:
+    def get_rate_limit_status(self, client_ip: str, route: str) -> RateLimitStatus:
         """Get rate limit status for a specific client IP and route"""
 
         ip_route_key = (client_ip, route)
@@ -61,7 +76,9 @@ class RateLimiter:
             "route": route,
         }
 
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
         if any(
             request.url.path.startswith(excluded_route)
             for excluded_route in self.excluded_routes

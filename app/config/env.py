@@ -2,13 +2,13 @@ import os
 import certifi
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+_ = load_dotenv(override=True)
 
 
-def initialize_app_config():
+def initialize_app_config() -> None:
     """Initialize all application configuration."""
-    os.environ.setdefault("SSL_CERT_FILE", certifi.where())
-    os.environ.setdefault("REQUESTS_CA_BUNDLE", certifi.where())
+    _ = os.environ.setdefault(key="SSL_CERT_FILE", value=certifi.where())
+    _ = os.environ.setdefault(key="REQUESTS_CA_BUNDLE", value=certifi.where())
 
 
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")

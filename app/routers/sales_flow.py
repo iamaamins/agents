@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 from agents import Runner
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -8,16 +9,15 @@ from app.agents.openai.sales_flow.worker_agents import (
     html_converter,
     professional_sales_agent,
     subject_writer,
-    html_converter,
 )
 from app.agents.openai.sales_flow.manager_agents import sales_manager
 from app.lib.utils import run_agent_streamed, send_email
 
-router = APIRouter()
+router = APIRouter(prefix="/sales-flow")
 
 
-@router.post("/sales-flow/autonomous/{email}")
-async def autonomous(email: str):
+@router.post(path="/autonomous/{email}")
+async def autonomous(email: str) -> JSONResponse:
     if not email or not email.strip():
         raise HTTPException(status_code=400, detail="Email is required")
 
@@ -25,21 +25,21 @@ async def autonomous(email: str):
         raise HTTPException(status_code=400, detail="Invalid email format")
 
     result = await Runner.run(
-        sales_manager,
-        f"Send out a cold sales email addressed to Dear CEO from Head of Business Development to: {email}",
+        starting_agent=sales_manager,
+        input=f"Send out a cold sales email addressed to Dear CEO from Head of Business Development to: {email}",
     )
     return JSONResponse(content=result.final_output, status_code=200)
 
 
-@router.get("/sales-flow/streaming/{email}")
-async def streaming(email: str):
+@router.get(path="/streaming/{email}")
+async def streaming(email: str) -> StreamingResponse:
     if not email or not email.strip():
         raise HTTPException(status_code=400, detail="Email is required")
 
     if "@" not in email or "." not in email:
         raise HTTPException(status_code=400, detail="Invalid email format")
 
-    async def event_generator():
+    async def event_generator() -> AsyncGenerator[str]:
         emails: list[str] = []
 
         # Generate professional email

@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -17,7 +18,7 @@ limiter = RateLimiter()
 
 # Define the lifespan context manager
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     """Handles application startup and shutdown events"""
 
     app.state.limiter = limiter
@@ -36,17 +37,17 @@ origins = [
 
 
 # Middlewares
-app.add_middleware(ExceptionMiddleware)
+app.add_middleware(middleware_class=ExceptionMiddleware)
 app.add_middleware(
-    CORSMiddleware,
+    middleware_class=CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(BaseHTTPMiddleware, dispatch=limiter.dispatch)
+app.add_middleware(middleware_class=BaseHTTPMiddleware, dispatch=limiter.dispatch)
 
 
 # Routers
-app.include_router(sales_flow.router)
-app.include_router(utils.router)
+app.include_router(router=sales_flow.router)
+app.include_router(router=utils.router)

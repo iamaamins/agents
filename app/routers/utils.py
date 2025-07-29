@@ -1,22 +1,22 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from app.middleware.limiter import RateLimiter, get_limiter
 
 router = APIRouter(prefix="/utils")
 
 
-@router.get("/health")
-def health_check():
+@router.get(path="/health")
+def health_check() -> JSONResponse:
     return JSONResponse(status_code=200, content="Server is up and running")
 
 
-@router.get("/rate-limit/check")
+@router.get(path="/rate-limit/check")
 async def check_rate_limit(
     request: Request,
-    route: str = Query(..., description="The route path to check"),
-    method: str = Query(..., description="The HTTP method"),
-    limiter: RateLimiter = Depends(get_limiter),
-):
+    route: str = Query(default=..., description="The route path to check"),
+    method: str = Query(default=..., description="The HTTP method"),
+    limiter: RateLimiter = Depends(dependency=get_limiter),
+) -> JSONResponse:
     """Check rate limit status for a specific user and route"""
 
     try:
