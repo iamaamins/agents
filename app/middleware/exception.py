@@ -12,12 +12,10 @@ class ExceptionMiddleware(BaseHTTPMiddleware):
         try:
             return await call_next(request)
 
-        except HTTPException as http_exc:
-            raise http_exc
+        except HTTPException:
+            raise
 
         except Exception as exc:
-            print(exc)
-
             if "not a valid ObjectId" in str(exc):
                 return JSONResponse(
                     status_code=500, content={"detail": "Invalid ObjectId"}

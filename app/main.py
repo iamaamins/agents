@@ -9,6 +9,7 @@ from app.routers import sales_flow
 from app.config.env import initialize_app_config
 from app.routers import utils
 
+
 # Initialize app config
 initialize_app_config()
 

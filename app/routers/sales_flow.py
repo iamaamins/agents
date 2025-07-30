@@ -28,7 +28,7 @@ async def autonomous(email: str) -> JSONResponse:
         starting_agent=sales_manager,
         input=f"Send out a cold sales email addressed to Dear CEO from Head of Business Development to: {email}",
     )
-    return JSONResponse(content=result.final_output, status_code=200)
+    return JSONResponse(content=result.final_output_as(cls=str), status_code=200)
 
 
 @router.get(path="/streaming/{email}")
@@ -107,4 +107,4 @@ async def streaming(email: str) -> StreamingResponse:
         )
         yield "data: ✅ [SUCCESS] Email sent successfully\n\n"
 
-    return StreamingResponse(event_generator(), media_type="text/event-stream")
+    return StreamingResponse(content=event_generator(), media_type="text/event-stream")

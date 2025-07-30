@@ -1,7 +1,6 @@
-from agents import Agent, Runner, WebSearchTool
+from agents import Agent, WebSearchTool
 from agents.model_settings import ModelSettings
 from pydantic import BaseModel
-import asyncio
 
 
 class SearchItem(BaseModel):
@@ -50,50 +49,3 @@ writer_agent = Agent[Report](
     model="gpt-4o-mini",
     output_type=Report,
 )
-
-
-async def run_research_assistant_agent(query: str) -> SearchItems:
-    """Use the research assistant agent to come up with search items"""
-
-    result = await Runner.run(
-        starting_agent=research_assistant, input=f"Query: {query}"
-    )
-    return result.final_output
-
-
-async def search(search_item: SearchItem) -> str:
-    """Use the search agent to run a web search for the search item"""
-
-    result = await Runner.run(
-        starting_agent=search_agent,
-        input=f"Search term: {search_item.query}\nReason:{search_item.reason}",
-    )
-    return result.final_output
-
-
-async def run_search_agent(search_items: SearchItems) -> list[str]:
-    """Use the search agent to perform search for each search item"""
-
-    tasks = [
-        asyncio.create_task(coro=search(search_item=item))
-        for item in search_items.items
-    ]
-    results = await asyncio.gather(*tasks)
-    return results
-
-
-async def run_writer_agent(query: str, search_results: list[str]) -> str:
-    """Use the writer agent to write a report based on the search results"""
-
-    result = await Runner.run(
-        starting_agent=writer_agent,
-        input=f"Original query: {query}\nSearch results: {search_results}",
-    )
-    return result.final_output
-
-
-async def run_research(query: str) -> None:
-    search_items = await run_research_assistant_agent(query)
-    search_results = await run_search_agent(search_items)
-    report = await run_writer_agent(query, search_results)
-    print(report)
