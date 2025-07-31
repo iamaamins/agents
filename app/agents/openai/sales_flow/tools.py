@@ -1,9 +1,9 @@
 from app.agents.openai.sales_flow.worker_agents import (
     busy_sales_agent,
     engaging_sales_agent,
-    html_converter,
+    html_converter_agent,
     professional_sales_agent,
-    subject_writer,
+    subject_writer_agent,
 )
 from agents import function_tool
 from app.lib.utils import send_email
@@ -24,12 +24,12 @@ busy_sales_agent_tool = busy_sales_agent.as_tool(
     tool_description="Write a concise sales email",
 )
 
-subject_writer_tool = subject_writer.as_tool(
+subject_writer_tool = subject_writer_agent.as_tool(
     tool_name="subject_writer",
     tool_description="Write a subject for a cold sales email",
 )
 
-html_converter_tool = html_converter.as_tool(
+html_converter_tool = html_converter_agent.as_tool(
     tool_name="html_converter",
     tool_description="Convert a text email body to an HTML email body",
 )

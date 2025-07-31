@@ -26,13 +26,13 @@ best_email_picker = Agent[str](
     model=chat_completions_model,
 )
 
-subject_writer = Agent[str](
+subject_writer_agent = Agent[str](
     name="Email subject writer",
     instructions="You are an expert at crafting compelling subjects for cold B2B sales emails. Given the body of a sales email about GenAI, an AI-powered SaaS solution for SOC2 compliance, write a subject line that maximizes open rates and encourages replies. Your subject should be clear, relevant, and tailored to the recipient's needs—avoid generic or spammy language. Aim for brevity, curiosity, and professionalism, making the value of the email immediately apparent. Do not give an explanation; reply with the best subject only.",
     model=chat_completions_model,
 )
 
-html_converter = Agent[str](
+html_converter_agent = Agent[str](
     name="HTML email body converter",
     instructions="You are an expert at converting plain text or markdown email bodies into high-quality HTML emails for B2B sales outreach. Given a text email body (which may include markdown), generate a clean, visually appealing HTML email that is easy to read on all devices. Ensure the layout is simple and professional, with clear structure, appropriate use of headings, paragraphs, and lists. Preserve the intent and tone of the original message. Use inline styles for maximum compatibility, ensure accessibility (e.g., readable font sizes, sufficient contrast), and avoid unnecessary images or scripts. The resulting HTML should be suitable for sending to business recipients and should render well in all major email clients. Do not give an explanation; reply with the html email only. Do NOT wrap the HTML in any markdown code blocks (e.g., ```html```)..",
     model=chat_completions_model,

@@ -1,14 +1,29 @@
 from collections.abc import AsyncGenerator
+from agents import Runner
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import StreamingResponse
-from app.agents.openai.deep_research.agents import (
-    research_assistant,
-    search_agent,
-    writer_agent,
+from fastapi.responses import JSONResponse, StreamingResponse
+from app.agents.openai.deep_research.manager_agents import research_manager
+from app.agents.openai.deep_research.worker_agents import (
+    research_assistant_agent,
+    research_agent,
+    report_writer_agent,
 )
 from app.lib.utils import run_agent_streamed
 
 router = APIRouter(prefix="/deep-research")
+
+
+@router.post(path="/autonomous/{topic}")
+async def autonomous(topic: str) -> JSONResponse:
+    if not topic or not topic.strip():
+        raise HTTPException(status_code=400, detail="Research topic is required")
+
+    result = await Runner.run(
+        starting_agent=research_manager,
+        input=f"Conduct a deep research for the following topic: {topic}",
+    )
+
+    return JSONResponse(status_code=200, content=result.final_output_as(cls=str))
 
 
 @router.get(path="/streaming/{topic}")
@@ -19,7 +34,7 @@ async def streaming(topic: str) -> StreamingResponse:
     async def event_generator() -> AsyncGenerator[str]:
         search_items_chunks: list[str] = []
         async for value in run_agent_streamed(
-            agent=research_assistant,
+            agent=research_assistant_agent,
             prompt=f"Generate search items for the following topic: {topic}",
             response_chunks=search_items_chunks,
         ):
@@ -27,7 +42,7 @@ async def streaming(topic: str) -> StreamingResponse:
 
         search_result_chunks: list[str] = []
         async for value in run_agent_streamed(
-            agent=search_agent,
+            agent=research_agent,
             prompt=f"Run web search for the following search items: {"".join(search_items_chunks)}",
             response_chunks=search_result_chunks,
         ):
@@ -35,7 +50,7 @@ async def streaming(topic: str) -> StreamingResponse:
 
         report_chunks: list[str] = []
         async for value in run_agent_streamed(
-            agent=writer_agent,
+            agent=report_writer_agent,
             prompt=f"Write a research report with the following data: {"".join(search_result_chunks)}",
             response_chunks=report_chunks,
         ):
