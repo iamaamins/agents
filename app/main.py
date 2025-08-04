@@ -8,6 +8,8 @@ from app.middleware.limiter import RateLimiter
 from app.routers import sales_flow
 from app.config.env import initialize_app_config
 from app.routers import utils
+from app.routers import debate
+from app.routers import deep_research
 
 
 # Initialize app config
@@ -52,3 +54,5 @@ app.add_middleware(middleware_class=BaseHTTPMiddleware, dispatch=limiter.dispatc
 # Routers
 app.include_router(router=sales_flow.router)
 app.include_router(router=utils.router)
+app.include_router(router=debate.router)
+app.include_router(router=deep_research.router)

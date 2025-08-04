@@ -2,6 +2,7 @@ from collections.abc import AsyncGenerator
 from agents import Runner
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse
+from pydantic import BaseModel
 from app.agents.openai.deep_research.manager_agents import research_manager
 from app.agents.openai.deep_research.worker_agents import (
     research_assistant_agent,
@@ -13,29 +14,33 @@ from app.lib.utils import run_agent_streamed
 router = APIRouter(prefix="/deep-research")
 
 
-@router.post(path="/autonomous/{topic}")
-async def autonomous(topic: str) -> JSONResponse:
-    if not topic or not topic.strip():
+class Request(BaseModel):
+    topic: str
+
+
+@router.post(path="/autonomous")
+async def autonomous(request: Request) -> JSONResponse:
+    if not request.topic or not request.topic.strip():
         raise HTTPException(status_code=400, detail="Research topic is required")
 
     result = await Runner.run(
         starting_agent=research_manager,
-        input=f"Conduct a deep research for the following topic: {topic}",
+        input=f"Conduct a deep research for the following topic: {request.topic}",
     )
 
-    return JSONResponse(status_code=200, content=result.final_output_as(cls=str))
+    return JSONResponse(status_code=200, content=result.final_output.model_dump())
 
 
-@router.get(path="/streaming/{topic}")
-async def streaming(topic: str) -> StreamingResponse:
-    if not topic or not topic.strip():
+@router.get(path="/streaming")
+async def streaming(request: Request) -> StreamingResponse:
+    if not request.topic or not request.topic.strip():
         raise HTTPException(status_code=400, detail="Research topic is required")
 
     async def event_generator() -> AsyncGenerator[str]:
         search_items_chunks: list[str] = []
         async for value in run_agent_streamed(
             agent=research_assistant_agent,
-            prompt=f"Generate search items for the following topic: {topic}",
+            prompt=f"Generate search items for the following topic: {request.topic}",
             response_chunks=search_items_chunks,
         ):
             yield value
