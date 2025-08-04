@@ -2,7 +2,7 @@ from agents import Agent
 from app.agents.openai.sales_flow.tools import email_manager_tools, sales_manager_tools
 from app.config.ai import get_openai_model
 
-model = get_openai_model(is_premium=True)
+model = get_openai_model(use_premium_model=True)
 
 email_manager = Agent[None](
     name="Email Manager",

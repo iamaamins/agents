@@ -10,8 +10,8 @@ mistral_model = "mistral-medium-latest"
 anthropic_model = "claude-3-5-haiku-latest"
 
 
-def get_openai_model(is_premium: bool = False) -> OpenAIChatCompletionsModel:
-    if IS_DEV or not is_premium:
+def get_openai_model(use_premium_model: bool = False) -> OpenAIChatCompletionsModel:
+    if IS_DEV or not use_premium_model:
         return OpenAIChatCompletionsModel(
             model=mistral_model,
             openai_client=AsyncOpenAI(
@@ -27,8 +27,8 @@ def get_openai_model(is_premium: bool = False) -> OpenAIChatCompletionsModel:
     )
 
 
-def get_crewai_llm(is_premium: bool = False) -> LLM:
-    if IS_DEV or not is_premium:
+def get_crewai_llm(use_premium_model: bool = False) -> LLM:
+    if IS_DEV or not use_premium_model:
         return LLM(model=f"mistral/{mistral_model}", api_key=MISTRAL_API_KEY)
 
     return LLM(model=f"anthropic/{anthropic_model}", api_key=ANTHROPIC_API_KEY)
