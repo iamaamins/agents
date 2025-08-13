@@ -10,7 +10,7 @@ class Request(BaseModel):
     company: str
 
 
-@router.post("/")
+@router.post("")
 async def run_fin_sight(request: Request) -> JSONResponse:
     if not request.company or not request.company.strip():
         raise HTTPException(status_code=400, detail="Company name is required")
