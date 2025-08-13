@@ -2,6 +2,7 @@ from collections.abc import AsyncGenerator
 from agents import Agent, Runner
 from sendgrid import Mail, SendGridAPIClient
 from app.config.env import SENDGRID_API_KEY
+from datetime import datetime
 
 
 def send_email(subject: str, body: str, recipient: str) -> None:
@@ -39,3 +40,6 @@ async def run_agent_streamed(
                 yield f"data: {escaped_delta}\n\n"
 
     yield f"data: {separator}\n\n"
+
+
+current_year = datetime.now().year

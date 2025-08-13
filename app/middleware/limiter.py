@@ -20,8 +20,8 @@ class RateLimitStatus(TypedDict):
 
 class RateLimiter:
     def __init__(self) -> None:
-        self.max_requests: int = 2
-        self.time_window: timedelta = timedelta(hours=1)
+        self.max_requests: int = 1
+        self.time_window: timedelta = timedelta(hours=24)
         self.excluded_routes: set[str] = {"/utils"}
         self.request_history: dict[IpRouteKey, RequestTimestamps] = defaultdict[
             IpRouteKey, RequestTimestamps
