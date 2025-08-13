@@ -1,5 +1,6 @@
 from crewai import Agent, Task, Crew, Process
 from app.config.ai import get_crewai_llm
+from crewai_tools import SerperDevTool
 
 llm = get_crewai_llm()
 
@@ -12,6 +13,7 @@ def create_crew(company: str) -> Crew:
         goal=f"Research the company, news and potential for {company}",
         backstory=f"You're a seasoned financial researcher with a talent for finding the most relevant information about {company}. Known for your ability to find the most relevant information and present it in a clear and concise manner.",
         llm=llm,
+        tools=[SerperDevTool()],
     )
 
     analyst_agent = Agent(
