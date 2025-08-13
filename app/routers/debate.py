@@ -10,8 +10,8 @@ class Request(BaseModel):
     topic: str
 
 
-@router.post(path="/autonomous")
-async def autonomous(request: Request) -> JSONResponse:
+@router.post(path="/")
+async def run_debate(request: Request) -> JSONResponse:
     if not request.topic or not request.topic.strip():
         raise HTTPException(status_code=400, detail="Topic is required")
 
