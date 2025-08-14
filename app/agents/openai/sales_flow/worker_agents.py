@@ -1,7 +1,7 @@
 from agents import Agent
 from app.config.ai import get_openai_model
 
-model = get_openai_model(use_premium_model=True)
+model = get_openai_model()
 
 
 professional_sales_agent = Agent[str](
