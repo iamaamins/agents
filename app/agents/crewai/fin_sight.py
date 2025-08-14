@@ -4,7 +4,7 @@ from crewai_tools import SerperDevTool
 from app.lib.utils import current_year
 
 
-llm = get_crewai_llm(use_premium_model=True)
+llm = get_crewai_llm()
 
 
 def create_crew(company: str) -> Crew:

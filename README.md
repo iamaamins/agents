@@ -33,7 +33,7 @@ This is a FastAPI-based service that provides various AI agents for tasks like f
 ## Environment Variables Required
 
 - `ANTHROPIC_API_KEY`: For Claude AI integration
-- `MISTRAL_API_KEY`: For Mistral AI integration
+- `GEMINI_API_KEY`: For Gemini AI integration
 - `SENDGRID_API_KEY`: For email services
 - `SERPER_API_KEY`: For web search capabilities
 - `ENVIRONMENT`: Set to 'production' for deployment
