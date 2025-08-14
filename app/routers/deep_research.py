@@ -10,6 +10,7 @@ from app.agents.openai.deep_research.worker_agents import (
     report_writer_agent,
 )
 from app.lib.utils import run_agent_streamed
+from app.lib.constants import MAX_MEDIUM_INPUT_LENGTH
 
 router = APIRouter(prefix="/deep-research")
 
@@ -22,6 +23,9 @@ class Request(BaseModel):
 async def autonomous(request: Request) -> JSONResponse:
     if not request.topic or not request.topic.strip():
         raise HTTPException(status_code=400, detail="Research topic is required")
+
+    if len(request.topic) > MAX_MEDIUM_INPUT_LENGTH:
+        raise HTTPException(status_code=400, detail="Research topic is too long")
 
     result = await Runner.run(
         starting_agent=research_manager,

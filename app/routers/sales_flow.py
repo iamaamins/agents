@@ -12,6 +12,7 @@ from app.agents.openai.sales_flow.worker_agents import (
 )
 from app.agents.openai.sales_flow.manager_agents import sales_manager
 from app.lib.utils import run_agent_streamed, send_email
+from app.lib.constants import MAX_SHORT_INPUT_LENGTH
 
 router = APIRouter(prefix="/sales-flow")
 
@@ -23,6 +24,9 @@ async def autonomous(email: str) -> JSONResponse:
 
     if "@" not in email or "." not in email:
         raise HTTPException(status_code=400, detail="Invalid email format")
+
+    if len(email) > MAX_SHORT_INPUT_LENGTH:
+        raise HTTPException(status_code=400, detail="Email is too long")
 
     result = await Runner.run(
         starting_agent=sales_manager,

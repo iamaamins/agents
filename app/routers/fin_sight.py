@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from app.agents.crewai.fin_sight import create_crew
+from app.lib.constants import MAX_SHORT_INPUT_LENGTH
 
 router = APIRouter(prefix="/fin-sight")
 
@@ -14,6 +15,9 @@ class Request(BaseModel):
 async def run_fin_sight(request: Request) -> JSONResponse:
     if not request.company or not request.company.strip():
         raise HTTPException(status_code=400, detail="Company name is required")
+
+    if len(request.company) > MAX_SHORT_INPUT_LENGTH:
+        raise HTTPException(status_code=400, detail="Company name is too long")
 
     crew = create_crew(company=request.company)
     result = crew.kickoff()
