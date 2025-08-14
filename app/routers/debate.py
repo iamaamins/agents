@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from app.agents.crewai.debate import create_crew
 from app.lib.constants import MAX_MEDIUM_INPUT_LENGTH
 
-router = APIRouter(prefix="/debate")
+router = APIRouter(prefix="/agents/debate")
 
 
 class Request(BaseModel):

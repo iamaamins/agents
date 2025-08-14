@@ -7,7 +7,9 @@ router = APIRouter(prefix="/utils")
 
 @router.get(path="/health")
 def health_check() -> JSONResponse:
-    return JSONResponse(status_code=200, content="Server is up and running")
+    return JSONResponse(
+        status_code=200, content={"message": "Server is up and running"}
+    )
 
 
 @router.get(path="/rate-limit/check")

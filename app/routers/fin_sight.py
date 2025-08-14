@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from app.agents.crewai.fin_sight import create_crew
 from app.lib.constants import MAX_SHORT_INPUT_LENGTH
 
-router = APIRouter(prefix="/fin-sight")
+router = APIRouter(prefix="/agents/fin-sight")
 
 
 class Request(BaseModel):

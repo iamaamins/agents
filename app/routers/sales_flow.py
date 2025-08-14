@@ -14,7 +14,7 @@ from app.agents.openai.sales_flow.manager_agents import sales_manager
 from app.lib.utils import run_agent_streamed, send_email
 from app.lib.constants import MAX_SHORT_INPUT_LENGTH
 
-router = APIRouter(prefix="/sales-flow")
+router = APIRouter(prefix="/agents/sales-flow")
 
 
 @router.post(path="/autonomous/{email}")

@@ -12,7 +12,7 @@ from app.agents.openai.deep_research.worker_agents import (
 from app.lib.utils import run_agent_streamed
 from app.lib.constants import MAX_MEDIUM_INPUT_LENGTH
 
-router = APIRouter(prefix="/deep-research")
+router = APIRouter(prefix="/agents/deep-research")
 
 
 class Request(BaseModel):
