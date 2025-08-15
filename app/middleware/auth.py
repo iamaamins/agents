@@ -8,8 +8,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
     def __init__(self, app) -> None:
         super().__init__(app)
         self.excluded_routes = {
+            "/utils",
             "/docs",
             "/redoc",
+            "/openapi.json",
             "/agents/sales-flow/streaming",
             "/agents/deep-research/streaming",
         }
