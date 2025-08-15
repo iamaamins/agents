@@ -21,13 +21,17 @@ async def check_rate_limit(
 ) -> JSONResponse:
     """Check rate limit status for a specific user and route"""
 
-    try:
-        client_ip = limiter.get_client_ip(request=request)
-        route = f"{method.upper()} {route}"
+    client_ip = limiter.get_client_ip(request=request)
+    route = f"{method.upper()} {route}"
 
-        status = limiter.get_rate_limit_status(client_ip=client_ip, route=route)
+    is_rate_limited = limiter.get_rate_limit_status(client_ip=client_ip, route=route)
 
-        return JSONResponse(status_code=200, content=status)
+    if is_rate_limited:
+        raise HTTPException(
+            status_code=429,
+            detail="Maximum 1 request/day is allowed",
+        )
 
-    except:
-        raise HTTPException(status_code=500, detail="Error checking rate limit")
+    return JSONResponse(
+        status_code=200, content={"content": "Request is within rate limit"}
+    )

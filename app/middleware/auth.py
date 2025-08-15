@@ -8,7 +8,6 @@ class AuthMiddleware(BaseHTTPMiddleware):
     def __init__(self, app) -> None:
         super().__init__(app)
         self.excluded_routes = {
-            "/utils",
             "/docs",
             "/redoc",
             "/agents/sales-flow/streaming",
@@ -26,21 +25,21 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if not auth_header:
             return JSONResponse(
                 status_code=401,
-                content={"detail": "Missing Authorization header"},
+                content={"detail": "Unauthorized request"},
             )
 
         parts = auth_header.split()
         if len(parts) != 2 or parts[0] != "Bearer":
             return JSONResponse(
                 status_code=401,
-                content={"detail": "Invalid Authorization header format"},
+                content={"detail": "Unauthorized request"},
             )
 
         token = parts[1]
         if token != ACCESS_TOKEN:
             return JSONResponse(
                 status_code=401,
-                content={"detail": "Invalid token"},
+                content={"detail": "Unauthorized request"},
             )
 
         response = await call_next(request)
