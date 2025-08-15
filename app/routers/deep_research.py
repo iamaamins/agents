@@ -27,12 +27,17 @@ async def autonomous(request: Request) -> JSONResponse:
     if len(request.topic) > MAX_MEDIUM_INPUT_LENGTH:
         raise HTTPException(status_code=400, detail="Research topic is too long")
 
-    result = await Runner.run(
-        starting_agent=research_manager,
-        input=f"Conduct a deep research for the following topic: {request.topic}",
-    )
+    try:
+        result = await Runner.run(
+            starting_agent=research_manager,
+            input=f"Conduct a deep research for the following topic: {request.topic}",
+        )
 
-    return JSONResponse(status_code=200, content=result.final_output.model_dump())
+        return JSONResponse(
+            status_code=200, content={"content": result.final_output.model_dump()}
+        )
+    except:
+        raise
 
 
 @router.get(path="/streaming")

@@ -22,4 +22,4 @@ async def run_fin_sight(request: Request) -> JSONResponse:
     crew = create_crew(company=request.company)
     result = crew.kickoff()
 
-    return JSONResponse(status_code=200, content={"report": result.raw})
+    return JSONResponse(status_code=200, content={"content": result.raw})

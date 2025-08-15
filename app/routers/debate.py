@@ -22,4 +22,4 @@ async def run_debate(request: Request) -> JSONResponse:
     crew = create_crew(topic=request.topic)
     result = crew.kickoff()
 
-    return JSONResponse(status_code=200, content=result.raw)
+    return JSONResponse(status_code=200, content={"content": result.raw})

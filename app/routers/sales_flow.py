@@ -28,11 +28,14 @@ async def autonomous(email: str) -> JSONResponse:
     if len(email) > MAX_SHORT_INPUT_LENGTH:
         raise HTTPException(status_code=400, detail="Email is too long")
 
-    result = await Runner.run(
-        starting_agent=sales_manager,
-        input=f"Send out a cold sales email addressed to Dear CEO from Head of Business Development to: {email}",
-    )
-    return JSONResponse(content=result.final_output, status_code=200)
+    try:
+        result = await Runner.run(
+            starting_agent=sales_manager,
+            input=f"Send out a cold sales email addressed to Dear CEO from Head of Business Development to: {email}",
+        )
+        return JSONResponse(content={"content": result.final_output}, status_code=200)
+    except:
+        raise
 
 
 @router.get(path="/streaming/{email}")
