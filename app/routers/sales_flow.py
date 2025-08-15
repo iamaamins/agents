@@ -46,6 +46,9 @@ async def streaming(email: str) -> StreamingResponse:
     if "@" not in email or "." not in email:
         raise HTTPException(status_code=400, detail="Invalid email format")
 
+    if len(email) > MAX_SHORT_INPUT_LENGTH:
+        raise HTTPException(status_code=400, detail="Email is too long")
+
     async def event_generator() -> AsyncGenerator[str]:
         emails: list[str] = []
 

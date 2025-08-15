@@ -49,6 +49,9 @@ async def streaming(request: Request) -> StreamingResponse:
     if not topic:
         raise HTTPException(status_code=400, detail="Research topic is required")
 
+    if len(topic) > MAX_MEDIUM_INPUT_LENGTH:
+        raise HTTPException(status_code=400, detail="Research topic is too long")
+
     async def event_generator() -> AsyncGenerator[str]:
         search_items_chunks: list[str] = []
         async for value in run_agent_streamed(
