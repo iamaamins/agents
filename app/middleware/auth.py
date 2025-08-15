@@ -7,7 +7,13 @@ from app.config.env import ACCESS_TOKEN
 class AuthMiddleware(BaseHTTPMiddleware):
     def __init__(self, app) -> None:
         super().__init__(app)
-        self.excluded_routes = {"/utils", "/docs", "/redoc"}
+        self.excluded_routes = {
+            "/utils",
+            "/docs",
+            "/redoc",
+            "/agents/sales-flow/streaming",
+            "/agents/deep-research/streaming",
+        }
 
     async def dispatch(self, request: Request, call_next) -> Response:
         if any(
