@@ -3,7 +3,6 @@ from fastapi.responses import JSONResponse
 from collections import defaultdict
 from datetime import datetime, timedelta
 from typing import TypedDict
-from starlette.middleware.base import RequestResponseEndpoint
 
 IpRouteKey = tuple[str, str]
 RequestTimestamps = list[datetime]
@@ -76,9 +75,7 @@ class RateLimiter:
             "route": route,
         }
 
-    async def dispatch(
-        self, request: Request, call_next: RequestResponseEndpoint
-    ) -> Response:
+    async def dispatch(self, request: Request, call_next) -> Response:
         if any(
             request.url.path.startswith(excluded_route)
             for excluded_route in self.excluded_routes
