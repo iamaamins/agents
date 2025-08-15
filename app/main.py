@@ -5,7 +5,6 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from app.middleware.exception import ExceptionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.middleware.limiter import RateLimiter
-from app.middleware.auth import AuthMiddleware
 from app.routers import fin_sight, sales_flow
 from app.config.env import initialize_app_config
 from app.routers import utils
@@ -46,7 +45,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(AuthMiddleware)
 app.add_middleware(BaseHTTPMiddleware, dispatch=limiter.dispatch)
 
 # Routers
