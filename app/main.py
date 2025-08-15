@@ -10,6 +10,7 @@ from app.config.env import initialize_app_config
 from app.routers import utils
 from app.routers import debate
 from app.routers import deep_research
+from app.middleware.auth import AuthMiddleware
 
 # Initialize app config
 initialize_app_config()
@@ -45,6 +46,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# app.add_middleware(AuthMiddleware)
 app.add_middleware(BaseHTTPMiddleware, dispatch=limiter.dispatch)
 
 # Routers
