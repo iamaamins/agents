@@ -13,13 +13,15 @@ class Request(BaseModel):
 
 @router.post("")
 async def run_fin_sight(request: Request) -> JSONResponse:
-    if not request.company or not request.company.strip():
+    company = request.company.strip()
+
+    if not company:
         raise HTTPException(status_code=400, detail="Company name is required")
 
-    if len(request.company) > MAX_SHORT_INPUT_LENGTH:
+    if len(company) > MAX_SHORT_INPUT_LENGTH:
         raise HTTPException(status_code=400, detail="Company name is too long")
 
-    crew = create_crew(company=request.company)
+    crew = create_crew(company=company)
     result = crew.kickoff()
 
     return JSONResponse(status_code=200, content={"content": result.raw})

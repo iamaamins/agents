@@ -2,6 +2,7 @@ from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 from collections import defaultdict
 from datetime import datetime, timedelta
+from app.config.env import IS_DEV
 
 IpRouteKey = tuple[str, str]
 RequestTimestamps = list[datetime]
@@ -9,7 +10,7 @@ RequestTimestamps = list[datetime]
 
 class RateLimiter:
     def __init__(self) -> None:
-        self.max_requests: int = 1
+        self.max_requests: int = 100 if IS_DEV else 1
         self.time_window: timedelta = timedelta(hours=24)
         self.excluded_routes: set[str] = {"/utils", "/docs", "/redoc"}
         self.request_history: dict[IpRouteKey, RequestTimestamps] = defaultdict[

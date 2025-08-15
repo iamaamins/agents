@@ -21,16 +21,18 @@ class Request(BaseModel):
 
 @router.post(path="/autonomous")
 async def autonomous(request: Request) -> JSONResponse:
-    if not request.topic or not request.topic.strip():
+    topic = request.topic.strip()
+
+    if not topic:
         raise HTTPException(status_code=400, detail="Research topic is required")
 
-    if len(request.topic) > MAX_MEDIUM_INPUT_LENGTH:
+    if len(topic) > MAX_MEDIUM_INPUT_LENGTH:
         raise HTTPException(status_code=400, detail="Research topic is too long")
 
     try:
         result = await Runner.run(
             starting_agent=research_manager,
-            input=f"Conduct a deep research for the following topic: {request.topic}",
+            input=f"Conduct a deep research for the following topic: {topic}",
         )
 
         return JSONResponse(
@@ -42,14 +44,16 @@ async def autonomous(request: Request) -> JSONResponse:
 
 @router.get(path="/streaming")
 async def streaming(request: Request) -> StreamingResponse:
-    if not request.topic or not request.topic.strip():
+    topic = request.topic.strip()
+
+    if not topic:
         raise HTTPException(status_code=400, detail="Research topic is required")
 
     async def event_generator() -> AsyncGenerator[str]:
         search_items_chunks: list[str] = []
         async for value in run_agent_streamed(
             agent=research_assistant_agent,
-            prompt=f"Generate search items for the following topic: {request.topic}",
+            prompt=f"Generate search items for the following topic: {topic}",
             response_chunks=search_items_chunks,
         ):
             yield value

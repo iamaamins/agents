@@ -3,6 +3,7 @@ from typing import override
 from fastapi import HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from fastapi.exceptions import RequestValidationError
 
 
 class ExceptionMiddleware(BaseHTTPMiddleware):
