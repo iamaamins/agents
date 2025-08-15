@@ -12,7 +12,12 @@ class RateLimiter:
     def __init__(self) -> None:
         self.max_requests: int = 100 if IS_DEV else 1
         self.time_window: timedelta = timedelta(hours=24)
-        self.excluded_routes: set[str] = {"/utils", "/docs", "/redoc"}
+        self.excluded_routes: set[str] = {
+            "/utils",
+            "/docs",
+            "/redoc",
+            "/openapi.json",
+        }
         self.request_history: dict[IpRouteKey, RequestTimestamps] = defaultdict[
             IpRouteKey, RequestTimestamps
         ](list)
