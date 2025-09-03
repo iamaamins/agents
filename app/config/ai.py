@@ -14,17 +14,21 @@ mistral_model = "mistral-medium-latest"
 def get_openai_model(
     use_lite_model: bool = False, use_pro_model: bool = False
 ) -> OpenAIChatCompletionsModel:
-    if not IS_DEV and use_lite_model:
-        return OpenAIChatCompletionsModel(
-            model=gemini_lite_model,
-            openai_client=AsyncOpenAI(base_url=gemini_base_url, api_key=GEMINI_API_KEY),
-        )
-
-    if not IS_DEV and use_pro_model:
-        return OpenAIChatCompletionsModel(
-            model=gemini_pro_model,
-            openai_client=AsyncOpenAI(base_url=gemini_base_url, api_key=GEMINI_API_KEY),
-        )
+    if not IS_DEV:
+        if use_lite_model:
+            return OpenAIChatCompletionsModel(
+                model=gemini_lite_model,
+                openai_client=AsyncOpenAI(
+                    base_url=gemini_base_url, api_key=GEMINI_API_KEY
+                ),
+            )
+        elif use_pro_model:
+            return OpenAIChatCompletionsModel(
+                model=gemini_pro_model,
+                openai_client=AsyncOpenAI(
+                    base_url=gemini_base_url, api_key=GEMINI_API_KEY
+                ),
+            )
 
     return OpenAIChatCompletionsModel(
         model=mistral_model,
@@ -33,10 +37,10 @@ def get_openai_model(
 
 
 def get_crewai_llm(use_lite_model: bool = False, use_pro_model: bool = False) -> LLM:
-    if not IS_DEV and use_lite_model:
-        return LLM(model=f"gemini/{gemini_lite_model}", api_key=GEMINI_API_KEY)
-
-    if not IS_DEV and use_pro_model:
-        return LLM(model=f"gemini/{gemini_pro_model}", api_key=GEMINI_API_KEY)
+    if not IS_DEV:
+        if use_lite_model:
+            return LLM(model=f"gemini/{gemini_lite_model}", api_key=GEMINI_API_KEY)
+        elif use_pro_model:
+            return LLM(model=f"gemini/{gemini_pro_model}", api_key=GEMINI_API_KEY)
 
     return LLM(model=f"mistral/{mistral_model}", api_key=MISTRAL_API_KEY)

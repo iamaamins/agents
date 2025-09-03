@@ -11,6 +11,7 @@ from app.routers import utils
 from app.routers import debate
 from app.routers import deep_research
 from app.middleware.auth import AuthMiddleware
+from app.routers import stock_lens
 
 # Initialize app config
 initialize_app_config()
@@ -55,3 +56,4 @@ app.include_router(router=utils.router)
 app.include_router(router=debate.router)
 app.include_router(router=deep_research.router)
 app.include_router(router=fin_sight.router)
+app.include_router(router=stock_lens.router)
