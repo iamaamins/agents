@@ -2,9 +2,9 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from app.lib.constants import MAX_SHORT_INPUT_LENGTH
-from app.agents.crewai.stock_lens import create_crew
+from app.agents.crewai.pop_stock import create_crew
 
-router = APIRouter(prefix="/agents/stock-lens")
+router = APIRouter(prefix="/agents/pop-stock")
 
 
 class Request(BaseModel):
@@ -12,7 +12,7 @@ class Request(BaseModel):
 
 
 @router.post("/")
-async def run_stock_lens(request: Request) -> JSONResponse:
+async def run_pop_stock(request: Request) -> JSONResponse:
     sector = request.sector.strip()
 
     if not sector:

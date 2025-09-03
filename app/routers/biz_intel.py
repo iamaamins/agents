@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from app.agents.crewai.fin_sight import create_crew
+from app.agents.crewai.biz_intel import create_crew
 from app.lib.constants import MAX_SHORT_INPUT_LENGTH
 
-router = APIRouter(prefix="/agents/fin-sight")
+router = APIRouter(prefix="/agents/biz-intel")
 
 
 class Request(BaseModel):
@@ -12,7 +12,7 @@ class Request(BaseModel):
 
 
 @router.post("")
-async def run_fin_sight(request: Request) -> JSONResponse:
+async def run_biz_intel(request: Request) -> JSONResponse:
     company = request.company.strip()
 
     if not company:
