@@ -121,7 +121,8 @@ def create_crew(sector: str) -> Crew:
         3. Risk factors and mitigation strategies
         4. Explanation of why other companies were not selected
         5. Suggested position sizing and entry strategy
-        6. Key metrics to monitor""",
+        6. Key metrics to monitor
+        7. Disclaimer stating this report is for informational purposes only and should not be used for trading decisions""",
         agent=stock_picker,
         context=[research_trending_companies],
     )
