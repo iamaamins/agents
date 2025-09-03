@@ -11,7 +11,7 @@ class Request(BaseModel):
     sector: str
 
 
-@router.post("/")
+@router.post("")
 async def run_pop_stock(request: Request) -> JSONResponse:
     sector = request.sector.strip()
 
